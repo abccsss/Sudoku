@@ -55,10 +55,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Algorithms.cs" />
+    <Compile Include="AppResources.cs" />
+    <Compile Include="CellControl.xaml.cs">
+      <DependentUpon>CellControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DrawingHelper.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="GameControl.cs" />
+    <Compile Include="PlayingControl.xaml.cs">
+      <DependentUpon>PlayingControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Rule.cs" />
     <Compile Include="Rules.cs" />
     <Compile Include="Step.cs" />
+    <Compile Include="Strategy.cs" />
+    <Page Include="CellControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -71,6 +86,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="PlayingControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

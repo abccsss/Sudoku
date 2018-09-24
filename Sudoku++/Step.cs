@@ -6,37 +6,39 @@ using System.Threading.Tasks;
 
 namespace Sudoku
 {
-    class Step
+    public class Step
     {
-        public List<Candidate> Eliminations { get; } = new List<Candidate>();
-        public List<Candidate> Singles { get; } = new List<Candidate>();
+        public Game NewGame { get; set; }
 
         // Frames[0] is shown by default
         public List<StepFrame> Frames { get; } = new List<StepFrame>();
+
+        public static Step Invalid { get; } = new Step();
     }
 
-    class StepFrame
+    public class StepFrame
     {
         public string Caption { get; set; }
+
+        public List<Cell> Highlights { get; } = new List<Cell>();
         public List<HintNode> Nodes { get; } = new List<HintNode>();
         public List<HintArrow> Arrows { get; } = new List<HintArrow>();
     }
 
-    class HintNode
+    public class HintNode
     {
-        public List<Cell> Cells { get; } = new List<Cell>();
-        public int Value { get; set; }
+        public List<Candidate> Candidates { get; } = new List<Candidate>();
         public HintColor Color { get; set; }
     }
 
-    class HintArrow
+    public class HintArrow
     {
         public bool IsDashed { get; set; }
         public HintNode From { get; set; }
         public HintNode To { get; set; }
     }
 
-    enum HintColor
+    public enum HintColor
     {
         Red = 0,
         Green = 1,

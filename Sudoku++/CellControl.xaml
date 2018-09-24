@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="Sudoku.CellControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Sudoku"
+             mc:Ignorable="d" 
+             Width="100" Height="100"
+             HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent">
+    <Grid>
+        <Rectangle x:Name="highlightRectangle" Visibility="Hidden" />
+        <Rectangle x:Name="selectionRectangle" Visibility="Hidden" />
+
+        <TextBlock x:Name="valueText" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="75" />
+        <Grid x:Name="candidatesGrid" />
+
+        <Ellipse x:Name="redCircle" Margin="6" StrokeThickness="8" Opacity=".8" Visibility="Hidden" />
+    </Grid>
+</UserControl>

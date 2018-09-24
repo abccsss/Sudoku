@@ -23,6 +23,35 @@ namespace Sudoku
         public MainWindow()
         {
             InitializeComponent();
+            Background = AppResources.BackgroundBrush;
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            var rule = Rules.GetXRule(3, 3);
+            //TestRule(rule);
+            TestGame(Game.FromString(rule, ".4...5...1..8...2............2.34.89.........41.65.7............8...9..5...4...9."));
+        }
+
+        private void TestRule(Rule rule)
+        {
+            var game = Game.Generate(rule);
+            Game puzzle = null;
+            while (puzzle == null)
+                puzzle = game.GeneratePuzzle(0, 1, true);
+            Clipboard.SetDataObject(puzzle.ToString());
+            var pc = new PlayingControl(puzzle, true);
+
+            rootGrid.Children.Clear();
+            rootGrid.Children.Add(pc);
+        }
+
+        private void TestGame(Game game)
+        {
+            var pc = new PlayingControl(game, true);
+
+            rootGrid.Children.Clear();
+            rootGrid.Children.Add(pc);
         }
     }
 }

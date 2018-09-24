@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sudoku
 {
-    class Rule
+    public class Rule
     {
         public int Height { get; }
         public int Width { get; }
@@ -21,17 +21,29 @@ namespace Sudoku
         public List<Region> RegionByCell(int row, int column) => _regionByCell[row, column];
         public List<Region> RegionByCell(Cell cell) => _regionByCell[cell.Row, cell.Column];
 
+        private bool InitEnded { get; set; } = false;
+
         public Rule(string name, int height, int width, int digits)
         {
             Height = height;
             Width = width;
             Digits = digits;
+
             IsAvailable = new bool[height, width];
+            for (int r = 0; r < height; r++)
+                for (int c = 0; c < width; c++)
+                    IsAvailable[r, c] = true;
+
             _regionByCell = new List<Region>[height, width];
         }
 
         public void EndInit()
         {
+            if (InitEnded)
+                throw new InvalidOperationException();
+
+            InitEnded = true;
+
             for (int r = 0; r < Height; r++)
                 for (int c = 0; c < Width; c++)
                     if (IsAvailable[r, c])
@@ -43,10 +55,11 @@ namespace Sudoku
         }
     }
 
-    class Region
+    public class Region
     {
         public Cell[] Cells { get; }
-        public RegionVisual Visual { get; set; }
+        public RegionVisualType VisualType { get; set; }
+        public string Name { get; set; }
         
         public int KillerSum { get; set; }
 
@@ -57,7 +70,7 @@ namespace Sudoku
     }
 
     [Flags]
-    enum RegionVisual
+    public enum RegionVisualType
     {
         None = 0,
         Stroke = 1,
@@ -66,7 +79,7 @@ namespace Sudoku
         Killer = 8
     }
 
-    struct Cell
+    public struct Cell
     {
         public int Row { get; }
         public int Column { get; }
@@ -83,12 +96,17 @@ namespace Sudoku
 
         public override bool Equals(object obj) => obj is Cell cell && this == cell;
 
-        public override int GetHashCode() => Row << 16 + Column;
+        public override int GetHashCode() => Row << 8 + Column;
+
+        public static Cell None { get; } = new Cell(-1, -1);
     }
 
-    struct Candidate
+    public struct Candidate
     {
         public Cell Cell { get; }
+        public int Row => Cell.Row;
+        public int Column => Cell.Column;
+
         public int Value { get; }
 
         public Candidate(Cell cell, int value)
@@ -102,5 +120,13 @@ namespace Sudoku
             Cell = new Cell(row, column);
             Value = value;
         }
+
+        public static bool operator ==(Candidate c1, Candidate c2) => c1.Cell == c2.Cell && c1.Value == c2.Value;
+
+        public static bool operator !=(Candidate c1, Candidate c2) => !(c1 == c2);
+
+        public override bool Equals(object obj) => obj is Candidate c && this == c;
+
+        public override int GetHashCode() => Cell.GetHashCode() << 8 + Value;
     }
 }
