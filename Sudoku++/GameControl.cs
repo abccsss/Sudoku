@@ -197,13 +197,13 @@ namespace Sudoku
         {
             // to be improved
 
+            RemoveHints();
+
             Hint = hint;
 
             const double ArrowBend = 1.5;
             const double ArrowSize = 12;
-
-            RemoveHints();
-
+            
             double radius = 45.0 / ((int)Math.Sqrt(Rule.Digits - 1) + 1);
             List<Ellipse> ellipses = new List<Ellipse>();
 

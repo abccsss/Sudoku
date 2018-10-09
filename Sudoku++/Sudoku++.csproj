@@ -69,6 +69,10 @@
     <Compile Include="Rule.cs" />
     <Compile Include="Rules.cs" />
     <Compile Include="Step.cs" />
+    <Compile Include="Strategies\Graph.cs" />
+    <Compile Include="Strategies\HiddenSet.cs" />
+    <Compile Include="Strategies\NakedSet.cs" />
+    <Compile Include="Strategies\Validity.cs" />
     <Compile Include="Strategy.cs" />
     <Page Include="CellControl.xaml">
       <SubType>Designer</SubType>
@@ -117,5 +121,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

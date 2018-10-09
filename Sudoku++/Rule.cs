@@ -23,7 +23,7 @@ namespace Sudoku
 
         private bool InitEnded { get; set; } = false;
 
-        public Rule(string name, int height, int width, int digits)
+        public Rule(int height, int width, int digits)
         {
             Height = height;
             Width = width;
@@ -32,7 +32,7 @@ namespace Sudoku
             IsAvailable = new bool[height, width];
             for (int r = 0; r < height; r++)
                 for (int c = 0; c < width; c++)
-                    IsAvailable[r, c] = true;
+                    IsAvailable[r, c] = false;
 
             _regionByCell = new List<Region>[height, width];
         }
@@ -49,9 +49,41 @@ namespace Sudoku
                     if (IsAvailable[r, c])
                         _regionByCell[r, c] = new List<Region>();
 
+            var tmpRegions = new List<Region>();
+            foreach (var region in Regions) tmpRegions.Add(region);
+
             foreach (var region in Regions)
+            {
+                bool flag = true;
+                foreach (var regionn in _regionByCell[region.Cells[0].Row, region.Cells[0].Column])
+                {
+                    if (region.Cells.Length != regionn.Cells.Length) continue;
+                    bool flagg = true;
+                    for(int i = 0; i < region.Cells.Length; i++)
+                    {
+                        if(region.Cells[i] != regionn.Cells[i])
+                        {
+                            flagg = false;
+                            break;
+                        }
+                    }
+                    if (flagg)
+                    {
+                        flag = false;
+                        break;
+                    }
+                }
+                if (!flag)
+                {
+                    tmpRegions.Remove(region);
+                    continue;
+                }
                 foreach (var cell in region.Cells)
                     _regionByCell[cell.Row, cell.Column].Add(region);
+            }
+
+            Regions.Clear();
+            foreach (var region in tmpRegions) Regions.Add(region);
         }
     }
 

@@ -28,9 +28,14 @@ namespace Sudoku
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            var rule = Rules.GetXRule(3, 3);
-            //TestRule(rule);
-            TestGame(Game.FromString(rule, ".4...5...1..8...2............2.34.89.........41.65.7............8...9..5...4...9."));
+            /*Rule rule = new Rule(12, 12, 9);
+            Rules.AddStandardRegions(rule, 1, 9, new List<int> { 0, 3 }, new List<int> { 0, 3 }, true, false, null);
+            rule.EndInit();
+            TestGame(Game.FromString(rule, ".2....9........8..6.7....4.7........1.2......5.......9........9....3...8....83....6........9..3.71........4.......9.1.........3..7.1...4........"));*/
+            Rule rule = new Rule(9, 9, 9);
+            Rules.AddStandardRegions(rule, 3, 3, new List<int> { 0 }, new List<int> { 0 }, false, true, new List<int> { 0 });
+            rule.EndInit();
+            TestGame(Game.FromString(rule, "...9.5.........1.6.5.3.........3..6.3.6..........9..1......1...7.2.....8......7.."));
         }
 
         private void TestRule(Rule rule)
@@ -38,7 +43,7 @@ namespace Sudoku
             var game = Game.Generate(rule);
             Game puzzle = null;
             while (puzzle == null)
-                puzzle = game.GeneratePuzzle(0, 1, true);
+                puzzle = game.GeneratePuzzle(0, 1, false);
             Clipboard.SetDataObject(puzzle.ToString());
             var pc = new PlayingControl(puzzle, true);
 

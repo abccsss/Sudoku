@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sudoku.Strategies;
 
 namespace Sudoku
 {
@@ -22,13 +23,22 @@ namespace Sudoku
         public int CandidateCount(int row, int column) => _candidateCount[row, column];
         public int CandidateCount(Cell cell) => _candidateCount[cell.Row, cell.Column];
 
+        private int[,] _candidateByRegion;//[#region, value]
+        public int CandidateByRegion(int region, int value) => _candidateByRegion[region, value];
+
+        public Graph Graph { get; }
+        public bool HasGraph;
+
         public Game(Rule rule)
         {
             Rule = rule;
 
+            HasGraph = false;
+
             _value = new int[rule.Width, rule.Height];
             _isCandidate = new bool[rule.Width, rule.Height, rule.Digits];
             _candidateCount = new int[rule.Width, rule.Height];
+            _candidateByRegion = new int[rule.Regions.Count, rule.Digits];
 
             for (int r = 0; r < rule.Height; r++)
                 for (int c = 0; c < rule.Width; c++)
@@ -42,6 +52,12 @@ namespace Sudoku
                             _isCandidate[r, c, i] = true;
                     }
                 }
+
+            for (int reg = 0; reg < rule.Regions.Count; reg++){
+                for (int val = 0; val < rule.Digits; val++){
+                    _candidateByRegion[reg, val] = rule.Regions[reg].Cells.Length;
+                }
+            }
         }
 
         private static char CharFromValue(int value)
@@ -105,12 +121,11 @@ namespace Sudoku
         public void SetValue(int row, int column, int value)
         {
             _value[row, column] = value;
-            _candidateCount[row, column] = 0;
 
             if (value != -1)
             {
                 for (int i = 0; i < Rule.Digits; i++)
-                    _isCandidate[row, column, i] = false;
+                    SetCandidate(row, column, i, false);
 
                 foreach (var region in Rule.RegionByCell(row, column))
                     foreach (var cell in region.Cells)
@@ -127,8 +142,13 @@ namespace Sudoku
 
             _isCandidate[row, column, value] = isCandidate;
             _candidateCount[row, column] += (isCandidate ? 1 : -1);
-        }
 
+            foreach (var region in Rule.RegionByCell(row, column))
+            {
+                _candidateByRegion[Rule.Regions.IndexOf(region), value] += (isCandidate ? 1 : -1);
+            }
+        }
+        
         public void SetCandidate(Cell cell, int value, bool isCandidate) => SetCandidate(cell.Row, cell.Column, value, isCandidate);
 
         public Game Clone()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sudoku.Strategies;
 
 namespace Sudoku
 {
@@ -15,13 +16,29 @@ namespace Sudoku
         public static Strategy[][] AllStrategies = new Strategy[][]
         {
             // difficulty 1
-            new Strategy[] { },
+            new Strategy[] {
+                new Validity(),
+                new NakedSetStrategy(1),
+                new HiddenSetStrategy(1)
+            },
 
             // difficulty 2
-            new Strategy[] { },
+            new Strategy[] {
+                new NakedSetStrategy(2),
+                new HiddenSetStrategy(2),
+                new NakedSetStrategy(3),
+                new HiddenSetStrategy(3)
+            },
 
             // difficulty 3
-            new Strategy[] { },
+            new Strategy[] {
+                new NakedSetStrategy(4),
+                new NakedSetStrategy(5),
+                new HiddenSetStrategy(4),
+                new NakedSetStrategy(6),
+                new HiddenSetStrategy(5),
+                new HiddenSetStrategy(6)
+            },
 
             // difficulty 4
             new Strategy[] { },
