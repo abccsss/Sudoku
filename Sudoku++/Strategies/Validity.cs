@@ -97,11 +97,6 @@ namespace Sudoku.Strategies
         public List<Cell> InvalidCell = new List<Cell>();
         public Region InvalidRegion;
         public int InvalidValue;
-        
-        public Validity()
-        {
-            
-        }
 
         public void CheckValidity(Game game)
         {

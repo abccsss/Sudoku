@@ -35,9 +35,9 @@ namespace Sudoku
 
             HasGraph = false;
 
-            _value = new int[rule.Width, rule.Height];
-            _isCandidate = new bool[rule.Width, rule.Height, rule.Digits];
-            _candidateCount = new int[rule.Width, rule.Height];
+            _value = new int[rule.Height, rule.Width];
+            _isCandidate = new bool[rule.Height, rule.Width, rule.Digits];
+            _candidateCount = new int[rule.Height, rule.Width];
             _candidateByRegion = new int[rule.Regions.Count, rule.Digits];
 
             for (int r = 0; r < rule.Height; r++)
@@ -89,31 +89,34 @@ namespace Sudoku
             return s;
         }
 
-        public static Game FromString(Rule rule, string s)
+        public static Game FromString(Rule rule, List<string> s)
         {
             var game = new Game(rule);
-            int index = 0;
+            for(int i = 0; i < rule.BigRegions.Count; i++)
+            {
+                int index = 0;
 
-            for (int r = 0; r < rule.Height; r++)
-                for (int c = 0; c < rule.Width; c++)
-                {
-                    if (index == s.Length)
-                        return game;
-
-                    if (s[index] == '.' || s[index] == '-')
+                for (int r = 0; r < rule.BigRegions[i].Height; r++)
+                    for (int c = 0; c < rule.BigRegions[i].Width; c++)
                     {
-                        index++;
-                        continue;
+                        if (index == s[i].Length)
+                            return game;
+
+                        if (s[i][index] == '.' || s[i][index] == '-')
+                        {
+                            index++;
+                            continue;
+                        }
+
+                        int value = -1;
+                        while (value == -1 && index < s[i].Length)
+                            value = ValueFromChar(s[i][index++]);
+
+                        if (value == -1)
+                            continue; // return game;
+                        game.SetValue(r + rule.BigRegions[i].StartRow, c + rule.BigRegions[i].StartColumn, value);
                     }
-
-                    int value = -1;
-                    while (value == -1 && index < s.Length)
-                        value = ValueFromChar(s[index++]);
-
-                    if (value == -1)
-                        continue; // return game;
-                    game.SetValue(r, c, value);
-                }
+            }
 
             return game;
         }
@@ -155,7 +158,7 @@ namespace Sudoku
         {
             var game = new Game(Rule);
             for (int r = 0; r < Rule.Height; r++)
-                for (int c = 0; c < Rule.Height; c++)
+                for (int c = 0; c < Rule.Width; c++)
                     if (Rule.IsAvailable[r, c])
                     {
                         if (Value(r, c) == -1)

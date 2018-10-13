@@ -80,7 +80,7 @@ namespace Sudoku
                     for (int c = 0; c <= rule.Width; c++)
                         vThickLine[r, c] =
                             (c == 0 || !rule.IsAvailable[r, c - 1]) ^
-                            (c == rule.Height || !rule.IsAvailable[r, c]);
+                            (c == rule.Width || !rule.IsAvailable[r, c]);
 
                 // remove thick lines on the border if e.g. (0, i) and (n - 1, i) belongs to the same region
                 foreach (var region in rule.Regions)

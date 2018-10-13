@@ -15,6 +15,7 @@ namespace Sudoku
         public string Name { get; }
 
         public List<Region> Regions { get; } = new List<Region>();
+        public List<BigRegion> BigRegions { get; } = new List<BigRegion>();
         public bool[,] IsAvailable { get; }
 
         private List<Region>[,] _regionByCell { get; }
@@ -57,6 +58,7 @@ namespace Sudoku
                 bool flag = true;
                 foreach (var regionn in _regionByCell[region.Cells[0].Row, region.Cells[0].Column])
                 {
+                    if (regionn == region) break;
                     if (region.Cells.Length != regionn.Cells.Length) continue;
                     bool flagg = true;
                     for(int i = 0; i < region.Cells.Length; i++)
@@ -69,13 +71,15 @@ namespace Sudoku
                     }
                     if (flagg)
                     {
+                        regionn.BigRegions.Add(region.BigRegions[0]);
+                        regionn.AddName(region.GetName(null));
+                        tmpRegions.Remove(region);
                         flag = false;
                         break;
                     }
                 }
                 if (!flag)
                 {
-                    tmpRegions.Remove(region);
                     continue;
                 }
                 foreach (var cell in region.Cells)
@@ -91,13 +95,50 @@ namespace Sudoku
     {
         public Cell[] Cells { get; }
         public RegionVisualType VisualType { get; set; }
-        public string Name { get; set; }
-        
+        private List<string> _name;
+        public string Name { get => BigRegions[0].Name == "" ? _name[0] : BigRegions[0].Name + " " + _name[0]; }
+        public string GetName(BigRegion bigRegion) => bigRegion == null ? _name[0] : bigRegion.Name == "" ? _name[BigRegions.IndexOf(bigRegion)] : bigRegion.Name + " " + _name[BigRegions.IndexOf(bigRegion)];
+        public void AddName(string name)
+        {
+            _name.Add(name);
+        }
+
         public int KillerSum { get; set; }
+
+        public List<BigRegion> BigRegions { get; }
 
         public Region(int cellCount)
         {
+            _name = new List<string>();
             Cells = new Cell[cellCount];
+            BigRegions = new List<BigRegion>();
+        }
+    }
+
+    public class BigRegion
+    {
+        public string Name { get; set; }
+
+        public List<Cell> Cells { get; }
+
+        public int StartRow;
+        public int StartColumn;
+        public int Height;
+        public int Width;
+
+        public List<Region> Regions { get; }
+
+        public BigRegion(int startRow, int startColumn, int height, int width)
+        {
+            StartRow = startRow;
+            StartColumn = startColumn;
+            Height = height;
+            Width = width;
+            Cells = new List<Cell>();
+            Regions = new List<Region>();
+            for (int i = 0; i < height; i++)
+                for (int j = 0; j < width; j++)
+                    Cells.Add(new Cell(startRow + i, startColumn + j));
         }
     }
 
